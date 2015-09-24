@@ -1,1 +1,2 @@
 ./python/*
+./gittmp/bar ./gittmp/file ./gittmp/other_file

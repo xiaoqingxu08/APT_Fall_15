@@ -1,9 +1,3 @@
-<<<<<<< HEAD
 Jane and Joe
 John goes to the hill
-blue Hat, Purple Hat
-=======
-Jack and Jill
-John goes to the hill
 Red Hat, Green Hat
->>>>>>> d3d4b31... add MergeConflict.txt

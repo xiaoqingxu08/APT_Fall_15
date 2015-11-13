@@ -3,6 +3,7 @@ import os
 import urllib
 
 from google.appengine.api import users
+from google.appengine.api import mail
 # [START import_ndb]
 from google.appengine.ext import ndb
 # [END import_ndb]
@@ -15,20 +16,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-MAIN_PAGE_FOOTER_TEMPLATE = """\
-    <form action="/sign?%s" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form>
-    <hr>
-    <form>Guestbook name:
-      <input value="%s" name="guestbook_name">
-      <input type="submit" value="switch">
-    </form>
-    <a href="%s">%s</a>
-  </body>
-</html>
-"""
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
@@ -114,7 +101,35 @@ class Guestbook(webapp2.RequestHandler):
         self.redirect('/?' + urllib.urlencode(query_params))
 # [END guestbook]
 
+class InviteFriendHandler(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user is None:
+          login_url = users.create_login_url(self.request.uri)
+          self.redirect(login_url)
+          return
+        to_addr = self.request.get('content')
+        print to_addr
+        if not mail.is_email_valid(to_addr):
+            # Return an error message...
+            return
+
+        message = mail.EmailMessage()
+        message.sender = user.email()
+        message.to = to_addr
+        message.body = """
+I've invited you to Example.com!
+
+To accept this invitation, click the following link,
+or copy and paste the URL into your browser's address
+bar:
+        """
+
+        message.send()
+        self.redirect('/')
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/sign', Guestbook),
+    ('/invite', InviteFriendHandler),
 ], debug=True)

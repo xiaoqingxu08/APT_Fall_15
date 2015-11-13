@@ -13,7 +13,7 @@
           {% endif %}
         </b> wrote:
       {% else %}
-       An anonymous person wrote:
+       Someone wrote:
       {% endif %}
       <blockquote>{{ greeting.content }}</blockquote>
     {% endfor %}
@@ -30,6 +30,10 @@
       <input type="submit" value="switch">
     </form>
 
+    <form action="/invite?friend_email={{ friend_email }}" method="post">
+      <div><textarea name="content" rows="1" cols="60"></textarea></div>
+      <div><input type="submit" value="invite"></div>
+    </form>
     <a href="{{ url|safe }}">{{ url_linktext }}</a>
 
   </body>
